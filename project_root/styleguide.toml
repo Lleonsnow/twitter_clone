@@ -3,7 +3,7 @@ format = "wemake"
 show-source = true
 
 # Plugins:
-max-line-length = 80
+max-line-length = 75
 max-complexity = 6
 
 # darglint:
@@ -14,7 +14,6 @@ ignore = "D100,D104,D401,W504,RST303,RST304,DAR103,DAR203"
 
 ["setup.cfg".isort]
 profile = "wemake"
-
 
 [nitpick.files."setup.cfg"]
 comma_separated_values = ["flake8.ignore"]
