@@ -31,7 +31,7 @@ class UserResponseSchema(BaseModel):
 
 
 class MediaSchema(BaseModel):
-    tweet_id: int
+    # tweet_id: int
     tweet_data: str
 
     class Config:
@@ -69,6 +69,11 @@ class ResponseSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ErrorResponse(ResponseSchema):
+    error_type: str
+    error_message: str
 
 
 class MediaResponseSchema(ResponseSchema):

@@ -1,8 +1,5 @@
-from typing import List
-
 from fastapi import APIRouter, Depends, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.api.core.pydantic_models import MediaResponseSchema
 from app.api.core.validators import chain_validate_from_user
 from app.api.db.base_models import User

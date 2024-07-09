@@ -14,6 +14,12 @@ async def get_user_by_api_key(api_key: str, session: AsyncSession) -> User | Non
     return user_orm.scalar_one_or_none()
 
 
+async def get_user_by_id(user_id: User.id, session: AsyncSession) -> User | None:
+    query = select(User).filter(User.id == user_id)
+    user_orm = await session.execute(query)
+    return user_orm.scalar()
+
+
 async def get_users(session: AsyncSession) -> Sequence[User]:
     query = select(User)
     result = await session.execute(query)
@@ -46,3 +52,16 @@ async def user_to_dict(user: User | Dict[str, Any]) -> Dict[str, Any]:
         "followers": [{"id": follower.follower.id, "name": follower.follower.name} for follower in user.followers],
         "following": [{"id": follow.following.id, "name": follow.following.name} for follow in user.following]
     }
+
+
+async def save_user_follow(user_id: int, user: User, session: AsyncSession) -> None:
+    following = await get_user_by_id(user_id, session)
+    follower = Follower(follower=user, following=following)
+    session.add(follower)
+    await session.commit()
+
+
+async def remove_user_follow(user_id: int, user: User, session: AsyncSession) -> None:
+    following = await get_user_by_id(user_id, session)
+    await session.delete(following)
+    await session.commit()
