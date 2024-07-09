@@ -51,3 +51,6 @@ async def delete_tweet(uid: int, user: User = Depends(chain_validate_from_user),
                        session: AsyncSession = Depends(get_db)) -> ResponseSchema | ModelException:
     result = await delete_user_tweet(uid, user, session)
     return result if result else ResponseSchema(result=True)
+
+
+# @router.delete("/tweets/")

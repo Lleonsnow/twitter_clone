@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 from typing import Dict, Any
 
-from sqlalchemy import select
+from sqlalchemy import select, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -63,5 +63,6 @@ async def save_user_follow(user_id: int, user: User, session: AsyncSession) -> N
 
 async def remove_user_follow(user_id: int, user: User, session: AsyncSession) -> None:
     following = await get_user_by_id(user_id, session)
-    await session.delete(following)
+    query = delete(Follower).filter(Follower.follower_id == user.id, Follower.following_id == following.id)
+    await session.execute(query)
     await session.commit()

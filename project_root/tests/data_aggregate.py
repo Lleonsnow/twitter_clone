@@ -19,7 +19,7 @@ async def create_instance_api_key(api_key_data: List[Dict[str, str]]) -> List[Ap
     return api_keys_list
 
 
-async def save_media_binary(media: [List]) -> Dict[str, List[bytes]]:
+async def save_media_binary(media: [List]) -> List[str]:
     path = os.path.join(os.getcwd(), "media")
     for folder in os.listdir(path):
         if os.path.isdir(f"{path}/{folder}"):
@@ -46,7 +46,7 @@ async def parser(tweets: List[Tweet]) -> List[List[Tweet]]:
     return [part1, part2, part3]
 
 
-async def main() -> Tuple[List[User], List[ApiKey], Tuple[List[List[Tweet]], List[Tweet]], Dict[str, List[bytes]]]:
+async def main() -> Tuple[List[User], List[ApiKey], Tuple[List[List[Tweet]], List[Tweet]], List[str]]:
     users_list = await create_instance_user(users)
     api_keys_list = await create_instance_api_key(api_keys)
     media_links = await save_media_binary(m_str)

@@ -30,14 +30,14 @@ async def get_user_by_id(user_id: int, _: User = Depends(chain_validate_from_use
     return UserResponseSchema(result=True, user=UserProfileSchema(**user_dict))
 
 
-@router.post("users/{}/follow", response_model=ResponseSchema)
+@router.post("/users/{uid}/follow", response_model=ResponseSchema)
 async def post_user_follow(uid: int, user: User = Depends(chain_validate_from_user),
                            session: AsyncSession = Depends(get_db)):
     await save_user_follow(uid, user, session)
     return ResponseSchema(result=True)
 
 
-@router.delete("users/{}/follow", response_model=ResponseSchema)
+@router.delete("/users/{uid}/follow", response_model=ResponseSchema)
 async def delete_user_follow(uid: int, user: User = Depends(chain_validate_from_user),
                              session: AsyncSession = Depends(get_db)):
     await remove_user_follow(uid, user, session)
