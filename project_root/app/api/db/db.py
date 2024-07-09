@@ -1,3 +1,6 @@
+from contextlib import asynccontextmanager
+from typing import AsyncGenerator
+from fastapi import Request
 from sqlalchemy import Engine, event
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
@@ -13,10 +16,28 @@ async_engine = create_async_engine(DATABASE_URL, echo=True, future=True, pool_pr
 async_session = async_sessionmaker(async_engine, expire_on_commit=False, class_=AsyncSession)
 
 
-async def get_session() -> AsyncSession:
-    async with async_session() as session:
-        yield session
-        await session.close()
+class SessionManager:
+    def __init__(self, session_factory: async_sessionmaker) -> None:
+        self._session_factory = session_factory
+
+    @asynccontextmanager
+    async def get_session(self) -> AsyncGenerator[AsyncSession, None]:
+        async with self._session_factory() as session:
+            try:
+                yield session
+                await session.commit()
+            except Exception:
+                await session.rollback()
+                raise
+            finally:
+                await session.close()
+
+
+session_manager = SessionManager(async_session)
+
+
+async def get_db(request: Request) -> AsyncSession:
+    return request.state.db
 
 
 # DATABASE_URL = settings.base_url.get_secret_value()

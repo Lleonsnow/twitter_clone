@@ -1,25 +1,25 @@
 from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.core.pydantic_models import (
-    Follower,
-    Following,
-    UserProfile,
-    UserResponse,
+    UserProfileSchema,
+    UserResponseSchema,
 )
 from app.api.core.validators import chain_validate_from_user
 from app.api.db.base_models import User
+from app.api.services.user import get_user_with_followers, user_to_dict
+from app.api.db.db import get_db
 
 router = APIRouter()
 
 
-@router.get("/users/me", response_model=UserResponse)
-async def get_current_user(user_item: User = Depends(chain_validate_from_user)):
-    # Заглушка данных пользователя
-    user_data = {
-        "id": 1,
-        "name": "leon",
-        "followers": [Follower(id=2, name="john"), Follower(id=3, name="jane")],
-        "following": [Following(id=4, name="doe"), Following(id=5, name="smith")],
-    }
+@router.get("/users/me", response_model=UserResponseSchema)
+@router.get("/users/{user_id}", response_model=UserResponseSchema)
+async def get_current_user(user: User = Depends(chain_validate_from_user), session: AsyncSession = Depends(get_db)):
+    user_with_followers = await get_user_with_followers(user.id, session)
+    user_dict = await user_to_dict(user_with_followers)
 
-    return UserResponse(result=True, user=UserProfile(**user_data))
+    return UserResponseSchema(result=True, user=UserProfileSchema(**user_dict))
+
+
+
