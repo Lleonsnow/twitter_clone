@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from app.api.db.base_models import Tweet as BaseTweet, User as BaseUser, Like as BaseLike, Media as BaseMedia
 from app.api.core.pydantic_models import TweetSchema, TweetCreateRequest, TweetResponsePostSchema
+from app.api.services.like import get_like_by_tweet_id_and_user_id
 from app.api.services.media import bytes_to_str, get_medias_from_base
 
 
@@ -28,7 +29,7 @@ async def save_user_tweets_with_likes_and_media(tweets: List[BaseTweet],
 
         media_file = medias.pop()
 
-        media = BaseMedia(tweet=tweet, tweet_data=media_file) #await bytes_to_str(media_file))
+        media = BaseMedia(tweet=tweet, tweet_data=media_file)  # await bytes_to_str(media_file))
         if random_like:
             like = BaseLike(tweet=tweet, user=user, name=user.name)
             tweet.like_count = 1
@@ -59,8 +60,33 @@ async def create_new_tweet(request: TweetCreateRequest,
     tweet = BaseTweet(content=request.tweet_data,
                       author=user,
                       attachments=medias,
-                      likes=[],)
+                      likes=[], )
     session.add(tweet)
     await session.commit()
     await session.refresh(tweet)
     return TweetResponsePostSchema(tweet_id=tweet.id, result=True)
+
+
+async def set_tweet_like(tweet_id: BaseTweet.id, user: BaseUser, session: AsyncSession) -> None:
+    tweet = await get_tweet_by_id(tweet_id, session)
+    if not tweet:
+        return
+
+    like = BaseLike(tweet=tweet, user=user, name=user.name)
+    tweet.like_count += 1
+    session.add(like)
+    await session.commit()
+
+
+async def del_tweet_like(tweet_id: BaseTweet.id, user: BaseUser, session: AsyncSession) -> None:
+    tweet = await get_tweet_by_id(tweet_id, session)
+    like = await get_like_by_tweet_id_and_user_id(tweet_id, user.id, session)
+    tweet.like_count -= 1
+    await session.delete(like)
+    await session.commit()
+
+
+async def get_tweet_by_id(tweet_id: BaseTweet.id, session: AsyncSession) -> BaseTweet | None:
+    query = select(BaseTweet).filter(BaseTweet.id == tweet_id)
+    result = await session.execute(query)
+    return result.scalar()
