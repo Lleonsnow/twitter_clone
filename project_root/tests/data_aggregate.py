@@ -1,15 +1,17 @@
 import os
 from typing import Dict, List, Tuple
+
 import aiofiles
-from tests.data_aggregate_models import media_str as m_str, users, tweet_titles, api_keys
-from app.api.db.base_models import (
-    ApiKey,
-    Tweet,
-    User,
-)
+
+from app.api.db.base_models import ApiKey, Tweet, User
+from tests.data_aggregate_models import api_keys
+from tests.data_aggregate_models import media_str as m_str
+from tests.data_aggregate_models import tweet_titles, users
 
 
-async def create_instance_user(user_data: List[Dict[str, str | Dict[str, str]]]) -> List[User]:
+async def create_instance_user(
+    user_data: List[Dict[str, str | Dict[str, str]]]
+) -> List[User]:
     users_list = [User(**user) for user in user_data]
     return users_list
 
@@ -32,7 +34,9 @@ async def save_media_binary(media: [List]) -> List[str]:
 #     return [Media(tweet_data=item) for media_type in media_bytes for item in media_bytes[media_type]]
 
 
-async def create_instance_tweets(titles: List[str]) -> Tuple[List[List[Tweet]], List[Tweet]]:
+async def create_instance_tweets(
+    titles: List[str],
+) -> Tuple[List[List[Tweet]], List[Tweet]]:
     twits = [Tweet(content=item) for item in titles]
     parse_tweets = await parser(twits)
     return parse_tweets, twits
@@ -40,13 +44,15 @@ async def create_instance_tweets(titles: List[str]) -> Tuple[List[List[Tweet]], 
 
 async def parser(tweets: List[Tweet]) -> List[List[Tweet]]:
     length = len(tweets)
-    part1 = tweets[:length // 3]
-    part2 = tweets[length // 3:(length // 3) * 2]
-    part3 = tweets[(length // 3) * 2:]
+    part1 = tweets[: length // 3]
+    part2 = tweets[length // 3 : (length // 3) * 2]
+    part3 = tweets[(length // 3) * 2 :]
     return [part1, part2, part3]
 
 
-async def main() -> Tuple[List[User], List[ApiKey], Tuple[List[List[Tweet]], List[Tweet]], List[str]]:
+async def main() -> (
+    Tuple[List[User], List[ApiKey], Tuple[List[List[Tweet]], List[Tweet]], List[str]]
+):
     users_list = await create_instance_user(users)
     api_keys_list = await create_instance_api_key(api_keys)
     media_links = await save_media_binary(m_str)

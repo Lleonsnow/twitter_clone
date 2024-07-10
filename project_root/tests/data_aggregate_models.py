@@ -11,7 +11,12 @@ users = [
         username="bobby",
         email="user2@example.com",
         phone="9876543210",
-        address={"street": "Elm St", "city": "Othertown", "state": "NY", "zip": "67890"},
+        address={
+            "street": "Elm St",
+            "city": "Othertown",
+            "state": "NY",
+            "zip": "67890",
+        },
     ),
     dict(
         name="Svetlana",
@@ -19,7 +24,8 @@ users = [
         email="user3@example.com",
         phone="5551234567",
         address={"street": "Oak St", "city": "Thistown", "state": "TX", "zip": "34567"},
-    )]
+    ),
+]
 
 media_str = []
 
@@ -43,9 +49,10 @@ tweet_titles = [
     "Как я учу своего кота делать трюки",
     "Мурчание моего кота: что оно значит?",
     "Веселые фотографии моих котов в разных позах",
-    "Как мой кот научился открывать холодильник"
+    "Как мой кот научился открывать холодильник",
 ]
 api_keys = [
     dict(name="test"),
     dict(name="key2"),
-    dict(name="key3"),]
+    dict(name="key3"),
+]

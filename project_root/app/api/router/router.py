@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from app.api.core.settings import Settings
-from app.api.router.endpoints import tweet, user, media
+from app.api.router.endpoints import media, tweet, user
 
 api_router = APIRouter()
 settings = Settings()
