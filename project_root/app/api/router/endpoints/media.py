@@ -15,7 +15,7 @@ async def upload_media(
     file: UploadFile,
     _: User = Depends(chain_validate_from_user),
     session: AsyncSession = Depends(get_db),
-):
+) -> MediaResponseSchema:
     """Загрузка медиафайла"""
     media_id = await save_media(file.file, session)
     return MediaResponseSchema(result=True, media_id=media_id)

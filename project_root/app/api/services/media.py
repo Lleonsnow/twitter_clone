@@ -7,10 +7,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.db.base_models import Media as BaseMedia
 
 
-async def bytes_to_str(media: bytes) -> str:
-    return base64.b64encode(media).decode("utf-8")
-
-
 async def save_media(file: BinaryIO, session: AsyncSession) -> int:
     """Сохраняет медиа в базу данных и возвращает его id"""
     media = BaseMedia(tweet_data=file.read())

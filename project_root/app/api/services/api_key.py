@@ -1,5 +1,3 @@
-from typing import Type
-
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -13,7 +11,9 @@ async def check_api_key(api_key: str, session: AsyncSession) -> bool:
     return bool(api_key_orm.scalar())
 
 
-async def save_user_api_key(api_key: ApiKey, user: User, session: AsyncSession) -> None:
+async def save_user_api_key(
+    api_key: ApiKey, user: User, session: AsyncSession
+) -> None:
     """Сохранение API ключа у пользователя"""
     api_key.user = user
     session.add(api_key)

@@ -17,4 +17,3 @@ class Settings(BaseSettings):
     base_url: SecretStr = os.getenv("DATABASE_URL", None)
     project_name: StrictStr = os.getenv("PROJECT_NAME", None)
     project_version: StrictStr = os.getenv("PROJECT_VERSION", None)
-    db_test: SecretStr = os.getenv("DAT", None)

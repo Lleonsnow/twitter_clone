@@ -1,19 +1,13 @@
-["setup.cfg".flake8]
-format = "wemake"
-show-source = true
+[tool.black]
+line-length = 75
+target-version = ["py37", "py38", "py39", "py310"]
+extend-exclude = "__init__.py, asgi.py, wsgi.py"
+exclude = "postgres_data/*"
 
-# Plugins:
+[tool.flake8]
 max-line-length = 75
 max-complexity = 6
-
-# darglint:
-docstring-style = "numpy"
-
-# Violations:
 ignore = "D100,D104,D401,W504,RST303,RST304,DAR103,DAR203"
 
-["setup.cfg".isort]
-profile = "wemake"
-
-[nitpick.files."setup.cfg"]
-comma_separated_values = ["flake8.ignore"]
+[tool.isort]
+profile = "black"

@@ -54,13 +54,23 @@ class MediaSchema(BaseModel):
     @model_validator(mode="before")
     def decode_tweet_data(cls, media: BaseMedia | Dict) -> Dict:
         """Декодирует tweet_data в str"""
-        data = media.tweet_data if isinstance(media, BaseMedia) else media["tweet_data"]
-        uid = media.tweet_id if isinstance(media, BaseMedia) else media["tweet_id"]
+        data = (
+            media.tweet_data
+            if isinstance(media, BaseMedia)
+            else media["tweet_data"]
+        )
+        uid = (
+            media.tweet_id
+            if isinstance(media, BaseMedia)
+            else media["tweet_id"]
+        )
 
         return {
             "tweet_id": uid,
             "tweet_data": (
-                base64.b64encode(data).decode("utf-8") if type(data) is bytes else data
+                base64.b64encode(data).decode("utf-8")
+                if type(data) is bytes
+                else data
             ),
         }
 

@@ -4,7 +4,12 @@ users = [
         username="Alex_strong",
         email="user1@example.com",
         phone="1234567890",
-        address={"street": "Main St", "city": "Anytown", "state": "CA", "zip": "12345"},
+        address={
+            "street": "Main St",
+            "city": "Anytown",
+            "state": "CA",
+            "zip": "12345",
+        },
     ),
     dict(
         name="Bob",
@@ -23,7 +28,12 @@ users = [
         username="hostess",
         email="user3@example.com",
         phone="5551234567",
-        address={"street": "Oak St", "city": "Thistown", "state": "TX", "zip": "34567"},
+        address={
+            "street": "Oak St",
+            "city": "Thistown",
+            "state": "TX",
+            "zip": "34567",
+        },
     ),
 ]
 

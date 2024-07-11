@@ -8,14 +8,18 @@ from sqlalchemy.orm import selectinload
 from app.api.db.base_models import ApiKey, Follower, User
 
 
-async def get_user_by_api_key(api_key: str, session: AsyncSession) -> User | None:
+async def get_user_by_api_key(
+    api_key: str, session: AsyncSession
+) -> User | None:
     """Получает пользователя по API ключу."""
     query = select(User).join(ApiKey).filter(ApiKey.name == api_key)
     user_orm = await session.execute(query)
     return user_orm.scalar_one_or_none()
 
 
-async def get_user_by_id(user_id: User.id, session: AsyncSession) -> User | None:
+async def get_user_by_id(
+    user_id: User.id, session: AsyncSession
+) -> User | None:
     """Получает пользователя по ID."""
     query = select(User).filter(User.id == user_id)
     user_orm = await session.execute(query)
@@ -68,7 +72,9 @@ async def user_to_dict(user: User | Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-async def save_user_follow(user_id: int, user: User, session: AsyncSession) -> None:
+async def save_user_follow(
+    user_id: int, user: User, session: AsyncSession
+) -> None:
     """Создание подписки."""
     following = await get_user_by_id(user_id, session)
     follower = Follower(follower=user, following=following)
@@ -76,11 +82,14 @@ async def save_user_follow(user_id: int, user: User, session: AsyncSession) -> N
     await session.commit()
 
 
-async def remove_user_follow(user_id: int, user: User, session: AsyncSession) -> None:
+async def remove_user_follow(
+    user_id: int, user: User, session: AsyncSession
+) -> None:
     """Удаление подписки."""
     following = await get_user_by_id(user_id, session)
     query = delete(Follower).filter(
-        Follower.follower_id == user.id, Follower.following_id == following.id
+        Follower.follower_id == user.id,
+        Follower.following_id == following.id,
     )
     await session.execute(query)
     await session.commit()
