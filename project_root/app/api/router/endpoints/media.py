@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, UploadFile
+from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.core.pydantic_models import MediaResponseSchema
@@ -19,3 +20,11 @@ async def upload_media(
     """Загрузка медиафайла"""
     media_id = await save_media(file.file, file.filename, session)
     return MediaResponseSchema(result=True, media_id=media_id)
+
+
+@router.get("/{path:path}", response_class=FileResponse)
+async def get_media(
+    path: str,
+) -> FileResponse:
+    """Возвращает медиафайл"""
+    return FileResponse(path)

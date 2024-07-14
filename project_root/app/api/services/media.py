@@ -10,7 +10,7 @@ async def save_media(
     file: BinaryIO,
     file_name: str,
     session: AsyncSession,
-    path: str = "media",
+    path: str = "/api/media",
 ) -> int:
     """Сохраняет медиа-файл локально и возвращает его id"""
     if file_name.endswith("gif"):

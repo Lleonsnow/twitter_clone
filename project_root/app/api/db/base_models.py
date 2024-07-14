@@ -104,7 +104,7 @@ class Media(Base):
     tweet_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("tweets.id"), nullable=True
     )
-    tweet_data: Mapped[str] = mapped_column(String(100), default=None)
+    tweet_data: Mapped[str] = mapped_column(String(200), default=None)
     tweet: Mapped["Tweet"] = relationship(
         "Tweet", back_populates="attachments"
     )

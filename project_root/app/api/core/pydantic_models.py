@@ -1,8 +1,7 @@
-import base64
 from collections.abc import Sequence
-from typing import Dict, List
+from typing import List
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator
 
 from app.api.db.base_models import Media as BaseMedia
 
@@ -43,39 +42,6 @@ class UserResponseSchema(BaseModel):
     user: UserWithFollowersSchema
 
 
-class MediaSchema(BaseModel):
-    """Схема для медиафайла"""
-
-    tweet_id: int
-    tweet_data: str
-
-    class Config:
-        from_attributes = True
-
-    @model_validator(mode="before")
-    def decode_tweet_data(cls, media: BaseMedia | Dict) -> Dict:
-        """Декодирует tweet_data в str"""
-        data = (
-            media.tweet_data
-            if isinstance(media, BaseMedia)
-            else media["tweet_data"]
-        )
-        uid = (
-            media.tweet_id
-            if isinstance(media, BaseMedia)
-            else media["tweet_id"]
-        )
-
-        return {
-            "tweet_id": uid,
-            "tweet_data": (
-                base64.b64encode(data).decode("utf-8")
-                if type(data) is bytes
-                else data
-            ),
-        }
-
-
 class LikeSchema(BaseModel):
     """Схема для лайка"""
 
@@ -91,12 +57,17 @@ class TweetSchema(BaseModel):
 
     id: int
     content: str
-    attachments: Sequence[MediaSchema] = Field(default_factory=list)
+    attachments: List[str] = Field(default_factory=list)
     author: UserSchema
     likes: Sequence[LikeSchema] = Field(default_factory=list)
 
     class Config:
         from_attributes = True
+
+    @field_validator("attachments", mode="before")
+    def convert_attachments(cls, value: List[BaseMedia]) -> List[str]:
+        converted = [item.tweet_data for item in value]
+        return converted
 
 
 class BasicResponseSchema(BaseModel):

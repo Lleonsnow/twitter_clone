@@ -1,7 +1,6 @@
 import os
 from typing import Dict, List, Tuple
 from sqlalchemy import select
-
 from app.api.db.base_models import ApiKey, Tweet, User
 from app.api.db.db import SessionManager
 from app.api.services import api_key, follower, tweet, user
@@ -26,13 +25,13 @@ async def create_instance_api_key(
     return api_keys_list
 
 
-async def save_media_path(media: [List]) -> List[str]:
+async def save_media_path(media: List) -> List[str]:
     """Сохраняет медиа-файлы в объект media"""
     path = os.path.join(os.getcwd(), "media")
     for folder in os.listdir(path):
         if os.path.isdir(f"{path}/{folder}"):
             for file in os.listdir(f"{path}/{folder}"):
-                media.append(f"media/{folder}/{file}")
+                media.append(f"api/media/{folder}/{file}")
     return media
 
 
