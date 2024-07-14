@@ -46,6 +46,7 @@ class UserResponseSchema(BaseModel):
 class MediaSchema(BaseModel):
     """Схема для медиафайла"""
 
+    tweet_id: int
     tweet_data: str
 
     class Config:

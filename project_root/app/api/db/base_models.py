@@ -1,8 +1,13 @@
 from typing import Dict, List
 
-from sqlalchemy import JSON, ForeignKey, Integer, Sequence, String, Text, LargeBinary
+from sqlalchemy import JSON, ForeignKey, Integer, Sequence, String
 from sqlalchemy.ext.asyncio import AsyncAttrs
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.orm import (
+    DeclarativeBase,
+    Mapped,
+    mapped_column,
+    relationship,
+)
 
 
 class Base(DeclarativeBase, AsyncAttrs):
@@ -99,9 +104,7 @@ class Media(Base):
     tweet_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("tweets.id"), nullable=True
     )
-    tweet_data: Mapped[bytes] = mapped_column(
-        LargeBinary, default=None, nullable=True
-    )
+    tweet_data: Mapped[str] = mapped_column(String(100), default=None)
     tweet: Mapped["Tweet"] = relationship(
         "Tweet", back_populates="attachments"
     )

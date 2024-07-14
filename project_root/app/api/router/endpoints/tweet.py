@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.core.pydantic_models import (
@@ -50,7 +51,13 @@ async def post_tweet_like(
     session: AsyncSession = Depends(get_db),
 ) -> BasicResponseSchema | ModelException:
     result = await set_tweet_like(uid, user, session)
-    return result if result else BasicResponseSchema(result=True)
+    return (
+        JSONResponse(
+            content=result.dict(), status_code=int(result.error_message)
+        )
+        if result
+        else BasicResponseSchema(result=True)
+    )
 
 
 @router.delete("/tweets/{uid}/likes", response_model=BasicResponseSchema)
@@ -70,4 +77,10 @@ async def delete_tweet(
     session: AsyncSession = Depends(get_db),
 ) -> BasicResponseSchema | ModelException:
     result = await delete_user_tweet(uid, user, session)
-    return result if result else BasicResponseSchema(result=True)
+    return (
+        JSONResponse(
+            content=result.dict(), status_code=int(result.error_message)
+        )
+        if result
+        else BasicResponseSchema(result=True)
+    )

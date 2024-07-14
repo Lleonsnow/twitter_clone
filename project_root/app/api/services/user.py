@@ -28,7 +28,7 @@ async def get_user_by_id(
 
 async def get_users(session: AsyncSession) -> Sequence[User]:
     """Получает всех пользователей."""
-    query = select(User)
+    query = select(User).order_by(User.id)
     result = await session.execute(query)
     return result.scalars().all()
 
@@ -88,7 +88,7 @@ async def remove_user_follow(
     """Удаление подписки."""
     following = await get_user_by_id(user_id, session)
     query = delete(Follower).filter(
-        Follower.follower_id == user.id,
+        Follower.follower_id == user.id &
         Follower.following_id == following.id,
     )
     await session.execute(query)

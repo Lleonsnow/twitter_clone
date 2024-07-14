@@ -7,7 +7,11 @@ from sqlalchemy import case, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import aliased, selectinload
 
-from app.api.core.pydantic_models import ErrorResponse, TweetCreateRequest, TweetSchema
+from app.api.core.pydantic_models import (
+    ErrorResponse,
+    TweetCreateRequest,
+    TweetSchema,
+)
 from app.api.db.base_models import Follower as BaseFollower
 from app.api.db.base_models import Like as BaseLike
 from app.api.db.base_models import Media as BaseMedia
@@ -36,14 +40,12 @@ async def save_user_tweets_with_likes_and_media(
     session: AsyncSession,
 ) -> None:
     """Инициализация тестовых твитов в базе данных"""
-    random_like = random.randint(0, 1)
     for tweet in tweets:
+        random_like = random.randint(0, 1)
         tweet.author = user
         media_file = medias.pop()
 
-        media = BaseMedia(
-            tweet=tweet, tweet_data=media_file
-        )
+        media = BaseMedia(tweet=tweet, tweet_data=media_file)
 
         if random_like:
             like = BaseLike(tweet=tweet, user=user, name=user.name)
@@ -51,7 +53,6 @@ async def save_user_tweets_with_likes_and_media(
             session.add(like)
 
         session.add(media)
-        random_like = random.randint(0, 1)
 
 
 async def get_all_tweets(

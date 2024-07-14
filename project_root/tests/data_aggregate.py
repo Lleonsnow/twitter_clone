@@ -1,8 +1,5 @@
-import asyncio
 import os
 from typing import Dict, List, Tuple
-
-import aiofiles
 from sqlalchemy import select
 
 from app.api.db.base_models import ApiKey, Tweet, User
@@ -35,8 +32,7 @@ async def save_media_path(media: [List]) -> List[str]:
     for folder in os.listdir(path):
         if os.path.isdir(f"{path}/{folder}"):
             for file in os.listdir(f"{path}/{folder}"):
-                async with aiofiles.open(f"{path}/{folder}/{file}", "rb") as f:
-                    media.append(await f.read())
+                media.append(f"media/{folder}/{file}")
     return media
 
 
