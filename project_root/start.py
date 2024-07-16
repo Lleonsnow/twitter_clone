@@ -10,7 +10,7 @@ from app.api.db.base_models import Base
 from app.api.db.db import SessionManager, async_engine
 from app.api.db.db import session_manager as manager
 from app.api.router.router import api_router
-from tests.data_aggregate import check_aggregate_db, init_test_data
+from init_db.data_aggregate import check_aggregate_db, init_test_data
 
 
 @asynccontextmanager

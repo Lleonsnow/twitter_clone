@@ -4,9 +4,9 @@ from sqlalchemy import select
 from app.api.db.base_models import ApiKey, Tweet, User
 from app.api.db.db import SessionManager
 from app.api.services import api_key, follower, tweet, user
-from tests.data_aggregate_models import api_keys
-from tests.data_aggregate_models import media_str as m_str
-from tests.data_aggregate_models import tweet_titles, users
+from init_db.data_aggregate_models import api_keys
+from init_db.data_aggregate_models import media_str as m_str
+from init_db.data_aggregate_models import tweet_titles, users
 
 
 async def create_instance_user(
