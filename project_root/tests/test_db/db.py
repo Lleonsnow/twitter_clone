@@ -1,14 +1,15 @@
 from sqlalchemy import event, Engine, create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
-from project_root.tests.test_db.models import Base
+from sqlalchemy.orm.scoping import scoped_session
+from sqlalchemy.orm.session import sessionmaker
 
 DATABASE_URL = "sqlite:///Test_db.db"
 
-engine = create_engine(
-    DATABASE_URL, echo=True)
-session = scoped_session(sessionmaker(bind=engine))
+engine = create_engine(DATABASE_URL)
+session = scoped_session(sessionmaker(bind=engine, autocommit=False, expire_on_commit=False, autoflush=False))
 
-Base.metadata.create_all(engine)
+
+def get_session() -> scoped_session:
+    return session
 
 
 @event.listens_for(Engine, "connect")

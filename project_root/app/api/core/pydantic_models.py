@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 from typing import List
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 
 from app.api.db.base_models import Media as BaseMedia
 
@@ -12,8 +12,7 @@ class UserSchema(BaseModel):
     id: int
     name: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class FollowerSchema(UserSchema):
@@ -48,8 +47,7 @@ class LikeSchema(BaseModel):
     user_id: int
     name: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class TweetSchema(BaseModel):
@@ -61,8 +59,7 @@ class TweetSchema(BaseModel):
     author: UserSchema
     likes: Sequence[LikeSchema] = Field(default_factory=list)
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
     @field_validator("attachments", mode="before")
     def convert_attachments(cls, value: List[BaseMedia]) -> List[str]:
@@ -75,8 +72,7 @@ class BasicResponseSchema(BaseModel):
 
     result: bool
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ErrorResponse(BasicResponseSchema):

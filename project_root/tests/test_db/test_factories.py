@@ -1,15 +1,11 @@
-import uuid
-
 import factory
 from project_root.tests.test_db.db import session
-from project_root.tests.test_db.models import User, Follower, ApiKey, Tweet, Media
+from project_root.tests.test_db.base_models import User, Follower, ApiKey, Tweet, Media, Like
 
 
 class BaseFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         sqlalchemy_session = session
-
-    id = factory.LazyAttribute(lambda _: uuid.uuid4())
 
 
 class ApiKeyFactory(BaseFactory):
@@ -27,13 +23,23 @@ class MediaFactory(BaseFactory):
     tweet = factory.SubFactory("project_root.tests.test_db.test_factories.TweetFactory")
 
 
+class LikeFactory(BaseFactory):
+    class Meta:
+        model = Like
+
+    name = factory.Faker("user_name")
+    tweet = factory.SubFactory("project_root.tests.test_db.test_factories.TweetFactory")
+    user = factory.SubFactory("project_root.tests.test_db.test_factories.UserFactory")
+
+
 class TweetFactory(BaseFactory):
     class Meta:
         model = Tweet
 
     content = factory.Faker("sentence")
     author = factory.SubFactory("project_root.tests.test_db.test_factories.UserFactory")
-    like_count = factory.Faker("random_int", min=2, max=100)
+    like_count = factory.Faker("random_int", min=10, max=10)
+    likes = factory.RelatedFactoryList(LikeFactory, "tweet", size=10)
     attachments = factory.RelatedFactoryList(MediaFactory, "tweet", size=2)
 
 
@@ -63,5 +69,6 @@ class UserFactory(BaseFactory):
     phone = factory.Faker("phone_number")
     api_key = factory.SubFactory(ApiKeyFactory)
     tweets = factory.LazyAttribute(lambda _: [])
+    likes = factory.LazyAttribute(lambda _: [])
     followers = factory.LazyAttribute(lambda _: [])
     following = factory.LazyAttribute(lambda _: [])

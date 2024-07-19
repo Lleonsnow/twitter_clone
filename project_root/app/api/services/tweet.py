@@ -19,7 +19,7 @@ from app.api.db.base_models import Tweet as BaseTweet
 from app.api.db.base_models import User as BaseUser
 from app.api.exceptions.error_handler import error_handler
 from app.api.exceptions.models import TweetNotFound, TweetNotOwnedByAuthor
-from app.api.services.like import delete_like_by_tweet_id_and_user_id
+from app.api.services.like import set_tweet_unlike
 from app.api.services.media import get_medias_from_base
 
 
@@ -115,30 +115,12 @@ async def create_new_tweet(
     return tweet
 
 
-async def set_tweet_like(
-    tweet_id: BaseTweet.id, user: BaseUser, session: AsyncSession
-) -> ErrorResponse | None:
-    """Добавление лайка к твиту"""
-    tweet = await get_tweet_by_id(tweet_id, session)
-    if not tweet:
-        return await error_handler(
-            error=TweetNotFound(
-                status=HTTPStatus.NOT_FOUND, message="Tweet not found"
-            )
-        )
-
-    like = BaseLike(tweet=tweet, user=user, name=user.name)
-    tweet.like_count += 1
-    session.add(like)
-    await session.commit()
-
-
 async def del_tweet_like(
     tweet_id: BaseTweet.id, user: BaseUser, session: AsyncSession
 ) -> None:
     """Удаление лайка из твита"""
     tweet = await get_tweet_by_id(tweet_id, session)
-    await delete_like_by_tweet_id_and_user_id(tweet_id, user.id, session)
+    await set_tweet_unlike(tweet_id, user.id, session)
     tweet.like_count -= 1
     await session.commit()
 

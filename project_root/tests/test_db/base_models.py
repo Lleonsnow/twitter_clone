@@ -1,6 +1,5 @@
-import uuid
-from typing import Dict, List
-from sqlalchemy import JSON, ForeignKey, Integer, Sequence, String, UUID
+from typing import Dict, List, Any
+from sqlalchemy import JSON, ForeignKey, Integer, Sequence, String
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
@@ -10,7 +9,9 @@ from sqlalchemy.orm import (
 
 
 class Base(DeclarativeBase):
-    id: Mapped[int] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id: Mapped[int] = mapped_column(
+        Integer, Sequence(f"{__name__}_id_seq"), primary_key=True
+    )
 
 
 class User(Base):
@@ -20,12 +21,11 @@ class User(Base):
 
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     username: Mapped[str] = mapped_column(
-        String(100), nullable=False, unique=True
-    )
+        String(100), nullable=False)
     email: Mapped[str] = mapped_column(
         String(100), nullable=False, unique=True
     )
-    address: Mapped[Dict[str, str]] = mapped_column(JSON)
+    address: Mapped[Dict[str, Any]] = mapped_column(JSON, nullable=False)
     phone: Mapped[str] = mapped_column(
         String(20), nullable=False, unique=True
     )

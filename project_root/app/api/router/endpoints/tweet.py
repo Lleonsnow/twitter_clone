@@ -12,12 +12,12 @@ from app.api.core.validators import chain_validate_from_user
 from app.api.db.base_models import User
 from app.api.db.db import get_db
 from app.api.exceptions.models import ModelException
+from app.api.services.like import set_tweet_like
 from app.api.services.tweet import (
     create_new_tweet,
     del_tweet_like,
     delete_user_tweet,
     get_all_tweets,
-    set_tweet_like,
     tweets_as_schema,
 )
 
