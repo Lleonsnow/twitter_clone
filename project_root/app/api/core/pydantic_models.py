@@ -1,13 +1,12 @@
 from collections.abc import Sequence
 from typing import List
 
-from pydantic import BaseModel, Field, field_validator, ConfigDict
-
-from app.api.db.base_models import Media as BaseMedia
+from api.db.base_models import Media as BaseMedia
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class UserSchema(BaseModel):
-    """Схема для пользователя"""
+    """Схема для пользователя."""
 
     id: int
     name: str
@@ -16,33 +15,33 @@ class UserSchema(BaseModel):
 
 
 class FollowerSchema(UserSchema):
-    """Схема для подписчика"""
+    """Схема для подписчика."""
 
     ...
 
 
 class FollowingSchema(UserSchema):
-    """Схема для подписки"""
+    """Схема для подписки."""
 
     ...
 
 
 class UserWithFollowersSchema(UserSchema):
-    """Схема для пользователя с подписками и подписчиками"""
+    """Схема для пользователя с подписками и подписчиками."""
 
     followers: Sequence[FollowerSchema] = Field(default_factory=list)
     following: Sequence[FollowingSchema] = Field(default_factory=list)
 
 
 class UserResponseSchema(BaseModel):
-    """Схема для ответа на запрос пользователя"""
+    """Схема для ответа на запрос пользователя."""
 
     result: bool
     user: UserWithFollowersSchema
 
 
 class LikeSchema(BaseModel):
-    """Схема для лайка"""
+    """Схема для лайка."""
 
     user_id: int
     name: str
@@ -51,7 +50,7 @@ class LikeSchema(BaseModel):
 
 
 class TweetSchema(BaseModel):
-    """Схема для твита"""
+    """Схема для твита."""
 
     id: int
     content: str
@@ -63,12 +62,13 @@ class TweetSchema(BaseModel):
 
     @field_validator("attachments", mode="before")
     def convert_attachments(cls, value: List[BaseMedia]) -> List[str]:
+        """Преобразование медиафайлов в ссылки."""
         converted = [item.tweet_data for item in value]
         return converted
 
 
 class BasicResponseSchema(BaseModel):
-    """Базовая схема для ответа на запрос"""
+    """Базовая схема для ответа на запрос."""
 
     result: bool
 
@@ -76,32 +76,32 @@ class BasicResponseSchema(BaseModel):
 
 
 class ErrorResponse(BasicResponseSchema):
-    """Схема для обработки ошибки"""
+    """Схема для обработки ошибки."""
 
     error_type: str
     error_message: str
 
 
 class MediaResponseSchema(BasicResponseSchema):
-    """Схема для возвращения медиафайла"""
+    """Схема для возвращения медиафайла."""
 
     media_id: int
 
 
 class TweetsResponseSchema(BasicResponseSchema):
-    """Схема для возвращения твитов"""
+    """Схема для возвращения твитов."""
 
     tweets: List[TweetSchema] = Field(default_factory=list)
 
 
 class TweetPostResponseSchema(BasicResponseSchema):
-    """Схема для запроса на создание твита"""
+    """Схема для запроса на создание твита."""
 
     tweet_id: int
 
 
 class TweetCreateRequest(BaseModel):
-    """Схема для создания твита"""
+    """Схема для создания твита."""
 
     tweet_data: str
     tweet_media_ids: List[int] | None = []

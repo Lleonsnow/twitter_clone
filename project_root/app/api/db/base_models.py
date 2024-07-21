@@ -11,13 +11,15 @@ from sqlalchemy.orm import (
 
 
 class Base(DeclarativeBase, AsyncAttrs):
+    """Базовая модель."""
+
     id: Mapped[int] = mapped_column(
         Integer, Sequence(f"{__name__}_id_seq"), primary_key=True
     )
 
 
 class User(Base):
-    """Модель пользователя"""
+    """Модель пользователя."""
 
     __tablename__ = "users"
 
@@ -58,7 +60,7 @@ class User(Base):
 
 
 class Follower(Base):
-    """Модель подписок"""
+    """Модель подписок."""
 
     __tablename__ = "followers"
 
@@ -78,7 +80,7 @@ class Follower(Base):
 
 
 class Tweet(Base):
-    """Модель твита"""
+    """Модель твита."""
 
     __tablename__ = "tweets"
 
@@ -97,7 +99,7 @@ class Tweet(Base):
 
 
 class Media(Base):
-    """Модель медиафайла"""
+    """Модель медиафайла."""
 
     __tablename__ = "media"
 
@@ -111,7 +113,7 @@ class Media(Base):
 
 
 class Like(Base):
-    """Модель лайка"""
+    """Модель лайка."""
 
     __tablename__ = "likes"
 
@@ -123,7 +125,7 @@ class Like(Base):
 
 
 class ApiKey(Base):
-    """Модель API ключа"""
+    """Модель API ключа."""
 
     __tablename__ = "api_keys"
 

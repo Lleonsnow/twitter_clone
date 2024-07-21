@@ -1,11 +1,23 @@
 version: '3.8'
 
 services:
+  tests:
+    container_name: twitter_clone_tests
+    build: ../tests
+    depends_on:
+      - db
+    networks:
+      - app-network
+    volumes:
+      - ../tests:/tests
+    working_dir: /tests
+    command: ["sh", "-c", "sleep 4 && pytest --cov=../tests"]
+
   web:
     env_file:
       - .env
     container_name: twitter_clone_web
-    build: .
+    build: ../app
     ports:
       - "8000:8000"
     depends_on:
@@ -16,9 +28,8 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - DATABASE_URL=${DATABASE_URL}
-    command: ["sh", "-c", "sleep 5 && uvicorn start:app --host 0.0.0.0 --port 8000 --reload"]
-
-
+    working_dir: /api
+    command: ["sh", "-c", "sleep 10 && uvicorn start:app --host 0.0.0.0 --port 8000 --reload"]
 
   db:
     env_file:

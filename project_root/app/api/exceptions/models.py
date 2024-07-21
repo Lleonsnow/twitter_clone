@@ -22,3 +22,9 @@ class TweetNotOwnedByAuthor(ModelException):
     """Исключение при отсутствии связей между твитом и автором."""
 
     ...
+
+
+class PathNotFoundError(ModelException):
+    """Исключение при отсутствии пути."""
+
+    ...

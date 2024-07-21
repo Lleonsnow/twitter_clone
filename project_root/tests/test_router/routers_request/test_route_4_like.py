@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 @pytest.mark.like
 def test_post_user_like(client: TestClient, db: Session) -> None:
+    """Тест создания лайка."""
     response = client.post("/tweets/1/likes", headers={"api-key": "test"})
     assert response.status_code == 200
     resp_object = response.json()
@@ -13,6 +14,7 @@ def test_post_user_like(client: TestClient, db: Session) -> None:
 
 @pytest.mark.like
 def test_post_user_unlike(client: TestClient, db: Session) -> None:
+    """Тест удаления лайка."""
     response = client.post("/tweets/1/likes", headers={"api-key": "test"})
     assert response.status_code == 200
     resp_object = response.json()

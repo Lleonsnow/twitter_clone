@@ -1,7 +1,6 @@
+from api.db.base_models import Follower
+from api.services.user import get_users
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.api.db.base_models import Follower
-from app.api.services.user import get_users
 
 
 async def save_user_followers(session: AsyncSession) -> None:

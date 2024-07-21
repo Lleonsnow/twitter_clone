@@ -1,0 +1,22 @@
+[tool.black]
+line-length = 75
+target-version = ['py36', 'py37', 'py38', 'py39']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+    | \.venv
+    | build
+    | dist
+    | migrations
+    | postgres_data
+    | __pycache__
+    | \.mypy_cache
+    | \.pytest_cache
+    | \.tox
+    | env
+    | venv
+    | node_modules
+    | bower_components
+)/
+'''

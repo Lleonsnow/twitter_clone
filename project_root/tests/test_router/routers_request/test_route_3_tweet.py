@@ -5,7 +5,10 @@ from sqlalchemy.orm import Session
 
 @pytest.mark.tweet
 def test_post_user_tweets(client: TestClient, db: Session) -> None:
-    response = client.post("/user/create/tweets", headers={"api-key": "test"})
+    """Тест поста твита."""
+    response = client.post(
+        "/user/create/tweets", headers={"api-key": "test"}
+    )
     assert response.status_code == 200
     resp_object = response.json()
     assert resp_object["result"] is True
@@ -13,6 +16,7 @@ def test_post_user_tweets(client: TestClient, db: Session) -> None:
 
 @pytest.mark.tweet
 def test_get_user_tweets(client: TestClient, db: Session) -> None:
+    """Тест получения твитов пользователя."""
     response = client.get("/user/7/tweets", headers={"api-key": "test"})
     assert response.status_code == 200
     resp_object = response.json()
@@ -25,5 +29,3 @@ def test_get_user_tweets(client: TestClient, db: Session) -> None:
         assert tweet["like_count"] == len(tweet["likes"])
         assert tweet["likes"][-1]["name"] is not None
         assert tweet["attachments"][-1]["tweet_data"] is not None
-
-

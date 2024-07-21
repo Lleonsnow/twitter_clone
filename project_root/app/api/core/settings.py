@@ -8,10 +8,9 @@ load_dotenv()
 
 
 class Settings(BaseSettings):
-    """Конфигурация приложения"""
+    """Конфигурация приложения."""
 
     model_config = ConfigDict(extra="ignore")
-
     pg_user: SecretStr = os.getenv("POSTGRES_USER", None)
     pg_password: SecretStr = os.getenv("POSTGRES_PASSWORD", None)
     base_url: SecretStr = os.getenv("DATABASE_URL", None)

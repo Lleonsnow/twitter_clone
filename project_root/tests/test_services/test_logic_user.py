@@ -1,16 +1,22 @@
 from sqlalchemy import select
-from sqlalchemy.orm import Session, selectinload
-from project_root.tests.test_db.base_models import User
-from project_root.tests.test_db.test_factories import UserFactory, FollowerFactory, TweetFactory
+from sqlalchemy.orm import Session
+from tests.test_db.base_models import User
+from tests.test_db.test_factories import (
+    FollowerFactory,
+    TweetFactory,
+    UserFactory,
+)
 
 
 def create_user_to_db(session: Session) -> None:
+    """Создание пользователя в базе данных."""
     user = UserFactory()
     session.add(user)
     session.commit()
 
 
 def create_user_with_followers_to_db(session: Session) -> None:
+    """Создание пользователя с подписчиками в базе данных."""
     user = UserFactory()
     follower_1 = FollowerFactory(follower=user, following=UserFactory())
     follower_2 = FollowerFactory(follower=user, following=UserFactory())
@@ -23,6 +29,7 @@ def create_user_with_followers_to_db(session: Session) -> None:
 
 
 def create_user_with_tweets_to_db(session: Session) -> None:
+    """Создание пользователя с твитами в базе данных."""
     user = UserFactory()
     tweet_1 = TweetFactory(author=user)
     tweet_2 = TweetFactory(author=user)
@@ -32,6 +39,7 @@ def create_user_with_tweets_to_db(session: Session) -> None:
 
 
 def get_user_by_id(user_id: int, session: Session) -> User | None:
+    """Получение пользователя по id."""
     query = select(User).filter(User.id == user_id)
     user = session.execute(query).scalar_one_or_none()
     return user

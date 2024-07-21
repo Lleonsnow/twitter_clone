@@ -25,4 +25,6 @@ class TweetNotOwnedByAuthor(ModelException):
 
 
 class ErrorMediaType(ModelException):
+    """Исключение при неверном типе медиафайла."""
+
     ...

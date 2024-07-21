@@ -1,11 +1,10 @@
 from collections.abc import Sequence
 from typing import Any, Dict
 
+from api.db.base_models import ApiKey, Follower, User
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-
-from app.api.db.base_models import ApiKey, Follower, User
 
 
 async def get_user_by_api_key(
@@ -50,7 +49,11 @@ async def get_user_with_followers(
 
 
 async def create_user_flush(user: User, session: AsyncSession) -> User:
-    """Создание пользователя. Возвращает созданный объект."""
+    """
+    Создание пользователя.
+
+    Возвращает созданный объект.
+    """
     session.add(user)
     await session.flush()
     return user

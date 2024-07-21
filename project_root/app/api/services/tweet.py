@@ -3,30 +3,28 @@ from collections.abc import Sequence
 from http import HTTPStatus
 from typing import List
 
-from sqlalchemy import case, select
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import aliased, selectinload
-
-from app.api.core.pydantic_models import (
+from api.core.pydantic_models import (
     ErrorResponse,
     TweetCreateRequest,
     TweetSchema,
 )
-from app.api.db.base_models import Follower as BaseFollower
-from app.api.db.base_models import Like as BaseLike
-from app.api.db.base_models import Media as BaseMedia
-from app.api.db.base_models import Tweet as BaseTweet
-from app.api.db.base_models import User as BaseUser
-from app.api.exceptions.error_handler import error_handler
-from app.api.exceptions.models import TweetNotFound, TweetNotOwnedByAuthor
-from app.api.services.like import set_tweet_unlike
-from app.api.services.media import get_medias_from_base
+from api.db.base_models import Follower as BaseFollower
+from api.db.base_models import Like as BaseLike
+from api.db.base_models import Media as BaseMedia
+from api.db.base_models import Tweet as BaseTweet
+from api.db.base_models import User as BaseUser
+from api.exceptions.error_handler import error_handler
+from api.exceptions.models import TweetNotFound, TweetNotOwnedByAuthor
+from api.services.media import get_medias_from_base
+from sqlalchemy import case, select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import aliased, selectinload
 
 
 async def create_tweets_flush(
     tweets: List[BaseTweet], session: AsyncSession
 ) -> List[BaseTweet]:
-    """Инициализация тестовых твитов в базе данных"""
+    """Инициализация тестовых твитов в базе данных."""
     for tweet in tweets:
         session.add(tweet)
     await session.flush()
@@ -39,7 +37,7 @@ async def save_user_tweets_with_likes_and_media(
     medias: List[str],
     session: AsyncSession,
 ) -> None:
-    """Инициализация тестовых твитов в базе данных"""
+    """Инициализация тестовых твитов в базе данных."""
     for tweet in tweets:
         random_like = random.randint(0, 1)
         tweet.author = user
@@ -58,8 +56,9 @@ async def save_user_tweets_with_likes_and_media(
 async def get_all_tweets(
     user: BaseUser, session: AsyncSession
 ) -> Sequence[BaseTweet]:
-    """Получение всех твитов с сортировкой по подписчикам
-    и количеством лайков по твитам"""
+    """Получение всех твитов с сортировкой по подписчикам и количеством лайков
+    по твитам."""
+
     follower_alias = aliased(BaseFollower)
     user_alias = aliased(BaseUser)
 
@@ -93,7 +92,7 @@ async def get_all_tweets(
 async def tweets_as_schema(
     tweets: Sequence[BaseTweet],
 ) -> List[TweetSchema]:
-    """Преобразование твитов в схему"""
+    """Преобразование твитов в схему."""
     tweet_schemas = [TweetSchema.model_validate(tweet) for tweet in tweets]
     return tweet_schemas
 
@@ -101,7 +100,7 @@ async def tweets_as_schema(
 async def create_new_tweet(
     request: TweetCreateRequest, user: BaseUser, session: AsyncSession
 ) -> BaseTweet:
-    """Создание нового твита"""
+    """Создание нового твита."""
     medias = await get_medias_from_base(request.tweet_media_ids, session)
     tweet = BaseTweet(
         content=request.tweet_data,
@@ -115,20 +114,10 @@ async def create_new_tweet(
     return tweet
 
 
-async def del_tweet_like(
-    tweet_id: BaseTweet.id, user: BaseUser, session: AsyncSession
-) -> None:
-    """Удаление лайка из твита"""
-    tweet = await get_tweet_by_id(tweet_id, session)
-    await set_tweet_unlike(tweet_id, user.id, session)
-    tweet.like_count -= 1
-    await session.commit()
-
-
 async def get_tweet_by_id(
     tweet_id: BaseTweet.id, session: AsyncSession
 ) -> BaseTweet | None:
-    """Получение твита по id"""
+    """Получение твита по id."""
     query = (
         select(BaseTweet)
         .options(selectinload(BaseTweet.author))
@@ -141,7 +130,7 @@ async def get_tweet_by_id(
 async def delete_user_tweet(
     tweet_id: BaseTweet.id, user: BaseUser, session: AsyncSession
 ) -> ErrorResponse | None:
-    """Удаление твита"""
+    """Удаление твита."""
     tweet = await get_tweet_by_id(tweet_id, session)
     if not tweet:
         return await error_handler(

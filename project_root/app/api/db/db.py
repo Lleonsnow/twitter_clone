@@ -1,14 +1,13 @@
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
+from api.core.settings import Settings
 from fastapi import Request
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
-
-from app.api.core.settings import Settings
 
 settings = Settings()
 DATABASE_URL = settings.base_url.get_secret_value()
@@ -22,14 +21,14 @@ async_session = async_sessionmaker(
 
 
 class SessionManager:
-    """Класс для работы с сессиями SQLAlchemy"""
+    """Класс для работы с сессиями SQLAlchemy."""
 
     def __init__(self, session_factory: async_sessionmaker) -> None:
         self._session_factory = session_factory
 
     @asynccontextmanager
     async def get_session(self) -> AsyncGenerator[AsyncSession, None]:
-        """Менеджер сессий SQLAlchemy"""
+        """Менеджер сессий SQLAlchemy."""
         async with self._session_factory() as session:
             try:
                 yield session
@@ -45,5 +44,5 @@ session_manager = SessionManager(async_session)
 
 
 async def get_db(request: Request) -> AsyncSession:
-    """Контекстный менеджер для работы с сессиями SQLAlchemy"""
+    """Контекстный менеджер для работы с сессиями SQLAlchemy."""
     return request.state.db
