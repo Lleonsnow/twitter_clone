@@ -1,7 +1,11 @@
+from http import HTTPStatus
 from typing import BinaryIO, List, Sequence
 
 import aiofiles
+from api.core.pydantic_models import ErrorResponse
 from api.db.base_models import Media as BaseMedia
+from api.exceptions.error_handler import error_handler
+from api.exceptions.models import PathNotFoundError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -43,12 +47,19 @@ async def get_medias_from_base(
 
 async def get_media_from_base(
     media_path: str, session: AsyncSession
-) -> BaseMedia | None:
+) -> ErrorResponse | None:
     """Возвращает медиа из базы данных. По маршруту."""
-    if media_path.startswith("/"):
-        media_path = media_path.split("/")[-1]
+    # if media_path.startswith("/"):
+    #     media_path = media_path.split("/")[-1]
     query = select(BaseMedia).filter(
         BaseMedia.tweet_data.like(f"%{media_path}%")
     )
-    result = await session.execute(query)
-    return result.scalar_one_or_none()
+    result_query = await session.execute(query)
+    result = result_query.scalar()
+    if not result:
+        return await error_handler(
+            PathNotFoundError(
+                message="File not found", status=HTTPStatus.NOT_FOUND
+            )
+        )
+    return result

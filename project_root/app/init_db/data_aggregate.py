@@ -32,7 +32,7 @@ async def save_media_path(media: List) -> List[str]:
     for folder in os.listdir(path):
         if os.path.isdir(f"{path}/{folder}"):
             for file in os.listdir(f"{path}/{folder}"):
-                media.append(f"api/media/{folder}/{file}")
+                media.append(f"/api/media/{folder}/{file}")
     return media
 
 
