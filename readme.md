@@ -45,6 +45,7 @@ POSTGRES_PASSWORD=*Ваш пароль*
 DATABASE_URL=postgresql+asyncpg://*Ваш пользователь*:*Ваш пароль*@db:5432/*Название бд*
 PROJECT_NAME=*Название проекта*
 PROJECT_VERSION=*Версия проекта*
+SENTRY_DSN=*Ваш DSN от Sentry*
 ```
 ## *Сборка Docker контейнера*
 
