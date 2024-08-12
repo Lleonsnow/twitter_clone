@@ -16,3 +16,4 @@ class Settings(BaseSettings):
     base_url: SecretStr = os.getenv("DATABASE_URL", None)
     project_name: StrictStr = os.getenv("PROJECT_NAME", None)
     project_version: StrictStr = os.getenv("PROJECT_VERSION", None)
+    sentry_dsn: SecretStr = os.getenv("SENTRY_DSN", None)

@@ -10,6 +10,7 @@ from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from init_db.data_aggregate import check_aggregate_db, init_test_data
 from starlette.middleware.base import BaseHTTPMiddleware
+import sentry_sdk
 
 
 @asynccontextmanager
@@ -49,6 +50,12 @@ class DBSessionMiddleware(BaseHTTPMiddleware):
 settings = Settings()
 project_name = settings.project_name
 project_version = settings.project_version
+dsn = settings.sentry_dsn.get_secret_value()
+sentry_sdk.init(
+    dsn=dsn,
+    traces_sample_rate=1.0,
+    profiles_sample_rate=1.0,
+)
 app = FastAPI(
     title=project_name, version=project_version, lifespan=lifespan
 )
