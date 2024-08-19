@@ -1,3 +1,5 @@
+import asyncio
+import os
 from http import HTTPStatus
 from typing import BinaryIO, List, Sequence
 
@@ -49,8 +51,6 @@ async def get_media_from_base(
     media_path: str, session: AsyncSession
 ) -> ErrorResponse | None:
     """Возвращает медиа из базы данных. По маршруту."""
-    # if media_path.startswith("/"):
-    #     media_path = media_path.split("/")[-1]
     query = select(BaseMedia).filter(
         BaseMedia.tweet_data.like(f"%{media_path}%")
     )
@@ -63,3 +63,13 @@ async def get_media_from_base(
             )
         )
     return result
+
+
+async def delete_local_medias(path_list: Sequence[BaseMedia]) -> None:
+    """Удаляет локальные медиа-файлы."""
+    loop = asyncio.get_event_loop()
+
+    for media in path_list:
+        await loop.run_in_executor(
+            None, os.remove, media.tweet_data
+        )

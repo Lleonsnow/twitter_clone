@@ -15,7 +15,7 @@ from api.db.base_models import Tweet as BaseTweet
 from api.db.base_models import User as BaseUser
 from api.exceptions.error_handler import error_handler
 from api.exceptions.models import TweetNotFound, TweetNotOwnedByAuthor
-from api.services.media import get_medias_from_base
+from api.services.media import get_medias_from_base, delete_local_medias
 from sqlalchemy import case, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import aliased, selectinload
@@ -121,6 +121,7 @@ async def get_tweet_by_id(
     query = (
         select(BaseTweet)
         .options(selectinload(BaseTweet.author))
+        .options(selectinload(BaseTweet.attachments))
         .filter(BaseTweet.id == tweet_id)
     )
     result = await session.execute(query)
@@ -145,5 +146,6 @@ async def delete_user_tweet(
                 message="Tweet not owned by author",
             )
         )
+    await delete_local_medias(tweet.attachments)
     await session.delete(tweet)
     await session.commit()
